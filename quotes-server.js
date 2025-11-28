@@ -41,23 +41,28 @@ function serveStatic(req, res) {
     return;
   }
 
+  // Log static file requests to help debug missing assets (e.g. styles.css)
+  console.log(`Static request: ${pathname} -> ${filePath}`);
+
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.writeHead(404);
+      console.warn(`Static file not found: ${filePath} (${err.code})`);
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Not found');
       return;
     }
     const ext = path.extname(filePath).toLowerCase();
+    // Add explicit charset for text/* types and a no-cache header to make debugging easier
     const mime = {
-      '.html': 'text/html',
-      '.js': 'application/javascript',
-      '.css': 'text/css',
-      '.json': 'application/json',
+      '.html': 'text/html; charset=utf-8',
+      '.js': 'application/javascript; charset=utf-8',
+      '.css': 'text/css; charset=utf-8',
+      '.json': 'application/json; charset=utf-8',
       '.png': 'image/png',
       '.jpg': 'image/jpeg',
       '.svg': 'image/svg+xml'
     }[ext] || 'application/octet-stream';
-    res.writeHead(200, { 'Content-Type': mime });
+    res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'no-cache' });
     res.end(data);
   });
 }
