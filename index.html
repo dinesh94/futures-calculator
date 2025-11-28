@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futures Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Futures market</h1>
+        
+        <div class="futures-dropdown">
+            <select id="futuresMarket" class="dropdown-select">
+                <option value="">Select a futures market</option>
+            </select>
+        </div>
+
+        <div class="delayed-quotes">
+            <h3>Live Quote</h3>
+            <p id="liveQuote">Select a market to see live quote</p>
+        </div>
+
+        <!-- Contract Details Section -->
+        <div id="contractDetailsSection" class="contract-details-section" style="display: none;">
+            <h3 class="contract-details-title">Contract Details</h3>
+            <div class="contract-details-table">
+                <div class="contract-details-header">
+                    <div class="contract-details-column">Contract</div>
+                    <div class="contract-details-column">Point Value</div>
+                    <div class="contract-details-column">Tick Value</div>
+                    <div class="contract-details-column">Tick Size</div>
+                </div>
+                <div class="contract-details-body">
+                    <div class="contract-details-row">
+                        <div class="contract-details-column">
+                            <span class="contract-name" id="contractName">—</span>
+                        </div>
+                        <div class="contract-details-column">
+                            <span class="contract-value" id="pointValue">—</span>
+                        </div>
+                        <div class="contract-details-column">
+                            <span class="contract-value" id="tickValue">—</span>
+                        </div>
+                        <div class="contract-details-column">
+                            <span class="contract-value" id="tickSize">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Hypothetical order information</h2>
+        
+        <h3 class="subsection-title">Price details and order size</h3>
+        
+        <div class="position-buttons">
+            <button class="btn-position btn-long active">✓ Long</button>
+            <button class="btn-position btn-short">Short</button>
+        </div>
+
+        <form id="calculatorForm">
+            <!-- Entry Price -->
+            <div class="form-group">
+                <label for="entryPrice" class="label-with-icon">
+                    <span class="lock-icon">🔒</span>
+                    Entry price
+                </label>
+                <div class="input-group">
+                    <input type="number" id="entryPrice" placeholder="6672.00" value="6672.00" step="0.01">
+                    <button type="button" class="btn-adjust" aria-label="Decrease">−</button>
+                    <button type="button" class="btn-adjust" aria-label="Increase">+</button>
+                </div>
+                <div class="current-price">
+                    Current price: <span id="currentPriceDisplay">—</span>
+                </div>
+                <div class="date-info">
+                    <span>Dec '25</span>
+                    <span>Mar '26</span>
+                    <span>Jun '26</span>
+                    <span>27-11-2025 High</span>
+                    <span>27-11-2025 Low</span>
+                    <span>24-11-2025 High</span>
+                    <span>24-11-2025 Low</span>
+                </div>
+            </div>
+
+            <!-- Take Profit and Stop Loss -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="takeProfit" class="label-with-icon">
+                        <span class="lock-icon">🔒</span>
+                        Take profit
+                    </label>
+                    <div class="input-group">
+                        <input type="number" id="takeProfit" placeholder="6680.00" value="6680.00" step="0.01">
+                        <button type="button" class="btn-adjust" aria-label="Decrease">−</button>
+                        <button type="button" class="btn-adjust" aria-label="Increase">+</button>
+                    </div>
+                    <div class="profit-ratio">
+                        <span>Profit 1:2</span>
+                        <span>Profit 1:3</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="stopLoss" class="label-with-icon">
+                        <span class="lock-icon">🔒</span>
+                        Stop loss
+                    </label>
+                    <div class="input-group">
+                        <input type="number" id="stopLoss" placeholder="6660.00" value="6660.00" step="0.01">
+                        <button type="button" class="btn-adjust" aria-label="Decrease">−</button>
+                        <button type="button" class="btn-adjust" aria-label="Increase">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number of Contracts -->
+            <div class="form-group">
+                <label for="contracts" class="label-with-icon">
+                    <span class="lock-icon">🔒</span>
+                    Number of contracts
+                </label>
+                <div class="input-group">
+                    <input type="number" id="contracts" placeholder="1" value="1" min="1" step="1">
+                    <button type="button" class="btn-adjust" aria-label="Decrease">−</button>
+                    <button type="button" class="btn-adjust" aria-label="Increase">+</button>
+                </div>
+            </div>
+
+            <!-- Buying Power -->
+            <div class="form-group">
+                <label for="buyingPower" class="label-with-icon">
+                    <span class="lock-icon">🔒</span>
+                    Buying Power
+                </label>
+                <div class="input-group">
+                    <input type="number" id="buyingPower" placeholder="25000" value="25000" min="0" step="1">
+                    <button type="button" id="calcContractsBtn" class="btn-primary">Calc Contracts</button>
+                </div>
+                <small class="muted">Contracts = Buying Power ÷ Margin Requirement</small>
+            </div>
+
+            <!-- Slider for contracts removed per user request -->
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn-primary" id="calculateBtn">Calculate</button>
+                <button type="button" class="btn-secondary" id="clearBtn">Clear all</button>
+            </div>
+        </form>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section hidden">
+            <h2 class="results-title">Profit or loss results</h2>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>Potential profit</h3>
+                    <div class="result-item">
+                        <span class="result-label">Ticks</span>
+                        <span class="result-value profit">472.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Points</span>
+                        <span class="result-value profit">118.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">$</span>
+                        <span class="result-value profit">590.00</span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <h3>Potential loss</h3>
+                    <div class="result-item">
+                        <span class="result-label">Ticks</span>
+                        <span class="result-value loss">-509.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Points</span>
+                        <span class="result-value loss">-127.25</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">$</span>
+                        <span class="result-value loss">-636.25</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-reward-section">
+                <div class="risk-reward-item">
+                    <span class="risk-reward-label">Risk/reward ratio</span>
+                    <span class="risk-reward-value">1:0.93</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
